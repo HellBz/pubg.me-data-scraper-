@@ -38,8 +38,8 @@ class HeadgearItem {
 
     public function __toString() {
         return $this->name."\n".
-        $this->damageReduction."\n".
         $this->imageUrl."\n".
+        $this->damageReduction."\n".
         $this->durability."\n".
         $this->weight."\n";
     }

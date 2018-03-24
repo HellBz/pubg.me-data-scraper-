@@ -1,6 +1,6 @@
 <?php 
 
-class Vests {
+class Belts {
 
     public $version; 
     public $items = array();
@@ -28,21 +28,19 @@ class Vests {
     }
 }
 
-class VestsItem {
+class BeltsItem {
 
     public $name;
     public $imageUrl;
     public $capacityExtension;
     public $damageReduction;
-    public $durability;
     public $weight;
 
     public function __toString() {
         return $this->name."\n".
         $this->imageUrl."\n".
         $this->capacityExtension."\n".
-        $this->damageReduction."\n". 
-        $this->durability."\n".
+        $this->damageReduction."\n".
         $this->weight."\n";
     }
 
@@ -52,7 +50,6 @@ class VestsItem {
         "\"imageUrl\":\"".$this->imageUrl."\",".
         "\"capacityExtension\":\"".$this->capacityExtension."\",".
         "\"damageReduction\":\"".$this->damageReduction."\",".
-        "\"durability\":\"".$this->durability."\",".
         "\"weight\":\"".$this->weight."\"".
         "}";
     }

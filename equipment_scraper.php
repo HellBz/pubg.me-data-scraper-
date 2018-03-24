@@ -2,6 +2,7 @@
 
 include 'Headgear.php';
 include 'Vests.php';
+include 'Belts.php';
 
 # Equipment Scraper
 
@@ -22,6 +23,8 @@ $content = file_get_contents($targetUrl);
 echo scrapeHeadgear()->toJson();
 echo "\n\n";
 echo scrapeVests()->toJson();
+echo "\n\n";
+echo scrapeBelts()->toJson();
 echo "\n\n";
 
 
@@ -113,7 +116,45 @@ function scrapeVests() {
 	return $vests;	
 }
 
+#
+# Returns Belts data
+#
 function scrapeBelts() {
+	global $content, $rowStartString, $columnStartString; 
+
+	$belts = new Belts();
+
+	$startIndex = strpos($content, '<h1 class="mb-0">Belts</h1>');
+ 
+	$belts->version = getPatchVersion($startIndex);
+	
+	$startIndex = strpos($content, "<tbody>", $startIndex);
+	$endIndex = strpos($content, '</tbody>', $startIndex); 
+	$rowIndex = strpos($content, $rowStartString, $startIndex) + strlen($rowStartString);
+
+	while ($rowIndex < $endIndex) {
+
+		$item = new BeltsItem();
+ 
+		$item->imageUrl = getImageUrl($rowIndex);
+		$item->name = getName($rowIndex); 
+
+		$columnStartIndex = nextColumnIndex($rowIndex);
+		$item->capacityExtension = nextColumnValue($columnStartIndex);
+
+		$columnStartIndex = nextColumnIndex($columnStartIndex);
+		$item->damageReduction = nextColumnValue($columnStartIndex); 
+
+		$columnStartIndex = nextColumnIndex($columnStartIndex);
+		$item->weight = nextColumnValue($columnStartIndex);
+
+		$belts->addItem($item);
+
+		$rowIndex = strpos($content, $rowStartString, $rowIndex) + strlen($rowStartString);
+ 
+	}
+
+	return $belts;
 	
 }
 
