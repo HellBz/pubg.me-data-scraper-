@@ -113,17 +113,6 @@ function scrapeVests() {
 	return $vests;	
 }
 
-function nextColumnIndex($offset) {
-	global $content, $columnStartString;
-	return strpos($content, $columnStartString, $offset) + strlen($columnStartString);
-}
-
-function nextColumnValue($offset) {
-	global $content;
-	$columnEndIndex = strpos($content,'</td>', $offset);
-	return substr($content, $offset, $columnEndIndex - $offset);
-}
-
 function scrapeBelts() {
 	
 }
@@ -179,5 +168,27 @@ function scrapeBetweenStrings($offset, $startString, $endString) {
 	$endIndex = strpos($content, $endString, $startIndex);
 	return substr($content, $startIndex, $endIndex - $startIndex);
 }
+
+#
+# Returns the next index position after $offset that <td> is found in.
+#
+# $offset - An index position in $content.
+#
+function nextColumnIndex($offset) {
+	global $content, $columnStartString;
+	return strpos($content, $columnStartString, $offset) + strlen($columnStartString);
+}
+
+#
+# Returns the value between $offset and the next </td> found.
+#
+# $offset - An index position in $content.
+#
+function nextColumnValue($offset) {
+	global $content;
+	$columnEndIndex = strpos($content,'</td>', $offset);
+	return substr($content, $offset, $columnEndIndex - $offset);
+}
+
 
 ?> 
