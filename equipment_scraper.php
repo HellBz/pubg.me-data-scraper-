@@ -1,5 +1,6 @@
 <?php 
 
+include 'Equipment.php';
 include 'Headgear.php';
 include 'Vests.php';
 include 'Belts.php';
@@ -22,19 +23,18 @@ $targetUrl = "https://pubg.me/items/equipment";
 # Webpage data loaded into a string.
 $content = file_get_contents($targetUrl);
 
-echo scrapeHeadgear()->toJson();
-echo "\n\n";
-echo scrapeVests()->toJson();
-echo "\n\n";
-echo scrapeBelts()->toJson();
-echo "\n\n";
-echo scrapeOuter()->toJson();
-echo "\n\n";
-echo scrapeBack()->toJson();
-echo "\n\n";
+$equipment = new Equipment();
 
+$equipment->headgear = scrapeHeadgear();
+$equipment->vests = scrapeVests();
+$equipment->belts = scrapeBelts();
+$equipment->outer = scrapeOuter();
+$equipment->back = scrapeBack();
 
+echo $equipment->toJson();
 echo "\n";
+
+
 
 #
 # Returns HeadGear data.
