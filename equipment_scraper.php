@@ -3,6 +3,7 @@
 include 'Headgear.php';
 include 'Vests.php';
 include 'Belts.php';
+include 'Outer.php';
 
 # Equipment Scraper
 
@@ -25,6 +26,8 @@ echo "\n\n";
 echo scrapeVests()->toJson();
 echo "\n\n";
 echo scrapeBelts()->toJson();
+echo "\n\n";
+echo scrapeOuter()->toJson();
 echo "\n\n";
 
 
@@ -158,7 +161,46 @@ function scrapeBelts() {
 	
 }
 
+#
+# Returns Outer data
+#
 function scrapeOuter() {
+	global $content, $rowStartString, $columnStartString; 
+
+	$outer = new Outer();
+
+	$startIndex = strpos($content, '<h1 class="mb-0">Outer</h1>');
+ 
+	$outer->version = getPatchVersion($startIndex);
+	
+	$startIndex = strpos($content, "<tbody>", $startIndex);
+	$endIndex = strpos($content, '</tbody>', $startIndex); 
+	$rowIndex = strpos($content, $rowStartString, $startIndex) + strlen($rowStartString);
+
+	while ($rowIndex < $endIndex) {
+
+		$item = new OuterItem();
+ 
+		$item->imageUrl = getImageUrl($rowIndex);
+		$item->name = getName($rowIndex); 
+
+		$columnStartIndex = nextColumnIndex($rowIndex);
+		$item->capacityExtension = nextColumnValue($columnStartIndex);
+
+		$columnStartIndex = nextColumnIndex($columnStartIndex);
+		$item->damageReduction = nextColumnValue($columnStartIndex); 
+
+		$columnStartIndex = nextColumnIndex($columnStartIndex);
+		$item->weight = nextColumnValue($columnStartIndex);
+
+		$outer->addItem($item);
+
+		$rowIndex = strpos($content, $rowStartString, $rowIndex) + strlen($rowStartString);
+ 
+	}
+
+	return $outer;
+	
 	
 }
 
