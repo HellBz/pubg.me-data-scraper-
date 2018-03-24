@@ -4,6 +4,7 @@ include 'Headgear.php';
 include 'Vests.php';
 include 'Belts.php';
 include 'Outer.php';
+include 'Back.php';
 
 # Equipment Scraper
 
@@ -28,6 +29,8 @@ echo "\n\n";
 echo scrapeBelts()->toJson();
 echo "\n\n";
 echo scrapeOuter()->toJson();
+echo "\n\n";
+echo scrapeBack()->toJson();
 echo "\n\n";
 
 
@@ -201,10 +204,40 @@ function scrapeOuter() {
 
 	return $outer;
 	
-	
 }
 
 function scrapeBack() {
+	global $content, $rowStartString, $columnStartString; 
+
+	$back = new Back();
+
+	$startIndex = strpos($content, '<h1 class="mb-0">Back</h1>');
+ 
+	$back->version = getPatchVersion($startIndex);
+	
+	$startIndex = strpos($content, "<tbody>", $startIndex);
+	$endIndex = strpos($content, '</tbody>', $startIndex); 
+	$rowIndex = strpos($content, $rowStartString, $startIndex) + strlen($rowStartString);
+
+	while ($rowIndex > $startIndex && $rowIndex < $endIndex) {
+		$item = new BackItem();
+ 
+		$item->imageUrl = getImageUrl($rowIndex);
+		$item->name = getName($rowIndex); 
+
+		$columnStartIndex = nextColumnIndex($rowIndex);
+		$item->capacityExtension = nextColumnValue($columnStartIndex);
+
+		$columnStartIndex = nextColumnIndex($columnStartIndex);
+		$item->weight = nextColumnValue($columnStartIndex);
+
+		$back->addItem($item);
+
+		$rowIndex = strpos($content, $rowStartString, $rowIndex) + strlen($rowStartString);
+ 
+	}
+
+	return $back;
 	
 }
 
