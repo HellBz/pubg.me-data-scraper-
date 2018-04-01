@@ -37,6 +37,7 @@ $targetUrl = "https://pubg.me/items/attachments";
 $content = file_get_contents($targetUrl);
 
 echo scrapeMuzzles()->toJson();
+scrapeLowerRails();
 
 echo "\n";
 
@@ -74,18 +75,7 @@ function scrapeMuzzles() {
         // Just get the name of the Muzzle Item.
         $muzzleItem->name = substr($name, 0, $forPosition);
 
-        $forPosition += strlen($forString);
-        $commaPosition = strpos($name, ",", $forPosition);
-
-        // Get the name of each gun this Muzzle Item can attach to.
-        while ($commaPosition != false) {
-            $muzzleItem->addGun(trim(substr($name, $forPosition, $commaPosition - $forPosition)));
-            $forPosition = $commaPosition + 1;
-            $commaPosition = strpos($name, ",", $forPosition);
-        }
-
-        $muzzleItem->addGun(trim(substr($name, $forPosition)));
-
+        $muzzleItem->guns = getGuns(substr($name, $forPosition + strlen($forString), strlen($name) - $forPosition));
 
 		$nextRowIndex = strpos($content, $rowStartString , $rowIndex) + strlen($rowStartString);
 
@@ -207,5 +197,25 @@ function nextColumnValue($offset) {
 	return substr($content, $offset, $columnEndIndex - $offset);
 }
 
+#
+# Returns the list of guns from a given string. 
+#
+# Assumes format is "Item name for gun1, gun2, gun3, ... gunX".
+#
+# $gunsString - string of guns in the format written above.
+#
+function getGuns($gunsString){
+    $commaPosition = strpos($gunsString, ",");
+    $position = 0;
+    $guns = array();
+    while ($commaPosition != false) {
+        $guns[count($guns)]=trim(substr($gunsString, $position, $commaPosition - $position));
+        $position = $commaPosition + 1;
+        $commaPosition = strpos($gunsString, ",", $position);
+    }
+    $guns[count($guns)]=trim(substr($gunsString, $position));
+	return $guns;	
+
+}
 
 ?> 
