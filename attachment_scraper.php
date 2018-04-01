@@ -115,9 +115,80 @@ function scrapeMuzzles() {
 	
 }
 
-function scrapeLowerRails(){
+function scrapeLowerRails() {
+
+	global $content;
+
+	$rowStartString = '<div class="row item-attachment-row align-items-center">';
+	$columnDataStartString = '<div class="col-md-4 col-lg-3 offset-lg-1 item-attachment-data">';
+	$dataStartString = "<div>";
+	$forString = " for ";		
+
+	$startIndex = strpos($content, '<h1 class="mb-0">Lower Rail</h1>');
+
+	$endIndex = strpos($content, '<div class="card item-card attachments-card"', $startIndex);
+
+	
+	$version = getPatchVersion($startIndex);
+
+	$rowIndex = strpos($content, $rowStartString, $startIndex)+ strlen($rowStartString);
+ 
+	$muzzles = new Muzzles();
+	$muzzles->version = $version;
+
+	while($rowIndex < $endIndex) {
+
+		$muzzleItem = new MuzzleItem();
+		$image = getImageUrl($rowIndex);
+		$muzzleItem->imageUrl = $image;
+
+		// Keep in mind the name at this point is "Muzzle Item Name for gun1, gun2, gun3... etc".
+		$name = getName($rowIndex);   
+        $forPosition = strpos($name, $forString);
+
+        // Just get the name of the Muzzle Item.
+        $muzzleItem->name = substr($name, 0, $forPosition);
+
+        $muzzleItem->guns = getGuns(substr($name, $forPosition + strlen($forString), strlen($name) - $forPosition));
+
+		$nextRowIndex = strpos($content, $rowStartString , $rowIndex) + strlen($rowStartString);
+
+		$searchToIndex = 0;
+
+		// The last row doesn't have a next row, so use the end index value to search within bounds.
+		if ($nextRowIndex > $endIndex){
+			$searchToIndex = $endIndex;
+		}else{
+			$searchToIndex = $nextRowIndex;
+		}
+
+		$columnStartIndex = strpos($content, $columnDataStartString, $rowIndex);
+		$dataIndex = strpos($content, $dataStartString, $columnStartIndex) + strlen($dataStartString);
+
+		while($dataIndex < $searchToIndex){
+			$endDataIndex = strpos($content, '</div>', $dataIndex);
+			$effectString = substr($content, $dataIndex, $endDataIndex - $dataIndex);
+			$effect = Effects::from($effectString);
+			$effectValue = substr($effectString, 1, strpos($effectString, "%")-1);
+			$effectSign= EffectSign::from($effectString);
+
+			$muzzleEffect = new muzzleEffect();
+			$muzzleEffect->effect = $effect;
+			$muzzleEffect->value = $effectValue;
+			$muzzleEffect->sign = $effectSign;
+
+			$muzzleItem->addEffect($muzzleEffect);
+			
+			$dataIndex = strpos($content, $dataStartString, $endDataIndex) + strlen($dataStartString);
+		}
+
+		$muzzles->addItem($muzzleItem);
+		$rowIndex = $nextRowIndex;
+	}
+	return $muzzles;
 	
 }
+
 function scrapeUpperRails(){
 	
 }

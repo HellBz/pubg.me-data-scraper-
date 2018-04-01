@@ -24,6 +24,8 @@
  * SOFTWARE
  */ 
 
+include 'Attachment.php';
+
 class Muzzles {
 
     public $version; 
@@ -105,62 +107,5 @@ class MuzzleEffect {
     }
 
 }
-
-class Effects {
-
-    const DEVIATION= 0;
-    const FASTER_ADS= 1;
-    const HORIZONTAL_RECOIL = 2;  
-    const MAGNIFICATION= 3;
-    const RELOAD_DURATION= 4;
-    const RECOIL_PATTERN = 5;
-    const SHOT_SPEED = 6;
-    const SHOT_SPREAD = 7;  
-    const SPREAD_BASE= 8;  
-    const VERTICAL_RECOIL = 9;  
-
-    public static function from($string) {
-        if (stripos($string, "DEVIATION") !== false) {
-            return DEVIATION;
-        } else if (stripos($string, "FASTER ADS") !== false) {
-            return FASTER_ADS;
-        } else if (stripos($string, "HORIZONTAL RECOIL") !== false) {
-            return HORIZONTAL_RECOIL;
-        } else if (stripos($string, "MAGNIFICATION") !== false) {
-            return MAGNIFICATION;
-        } else if (stripos($string, "RELOAD DURATION") !== false) {
-            return RELOAD_DURATION;
-        }  else if (stripos($string, "RECOIL PATTERN") !== false) {
-            return RECOIL_PATTERN;
-        } else if (stripos($string, "SHOT SPEED") !== false) {
-            return SHOT_SPEED;
-        } else if (stripos($string, "SHOT SPREAD") !== false) {
-            return SHOT_SPREAD;
-        } else if (stripos($string, "SPREAD BASE") !== false) {
-            return SPREAD_BASE;
-        } else if (stripos($string, "VERTICAL RECOIL") !== false) {
-            return VERTICAL_RECOIL;
-        }
-    }
-}
-
-class EffectSign {
-
-    const POSITIVE = 1;
-    const NEGATIVE = -1;
-
-
-    public static function from($string) {
-        if (stripos($string, "+") !== false) {
-            return POSITIVE;
-        } else if (stripos($string, "-") !== false) {
-            return NEGATIVE;
-        } 
-    }
-}
-
-
-
-
 
 ?>
