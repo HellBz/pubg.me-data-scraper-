@@ -23,9 +23,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE
  */ 
- 
 
-class Muzzles {
+
+class LowerRails {
 
     public $version; 
     public $items = array();
@@ -49,7 +49,7 @@ class Muzzles {
     }
 }
 
-class MuzzleItem {
+class LowerRailItem {
 
     public $name;
     public $imageUrl;
@@ -91,7 +91,7 @@ class MuzzleItem {
 
 }
 
-class MuzzleEffect {
+class LowerRailEffect {
 
     public $effect;
     public $value;

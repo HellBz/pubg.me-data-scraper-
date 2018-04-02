@@ -27,14 +27,16 @@
 class Attachment {
 
     public $muzzles;
+    public $lowerRails;
 
     public function toJson() { 
         return 
         "{".
         "\"muzzles\":".$this->muzzles->toJson().",".
+        "\"lowerRails\":".$this->lowerRails->toJson()."".
         "}";
     }
-    
+
 }
 
 class Effects {

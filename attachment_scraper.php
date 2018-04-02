@@ -24,7 +24,9 @@
  * SOFTWARE
  */ 
 
+include 'Attachment.php';
 include 'Muzzles.php';
+include 'LowerRails.php';
 
 # Attachment Scraper 
 
@@ -36,9 +38,11 @@ $targetUrl = "https://pubg.me/items/attachments";
 # Webpage data loaded into a string.
 $content = file_get_contents($targetUrl);
 
-echo scrapeMuzzles()->toJson();
-scrapeLowerRails();
+$attachment = new Attachment();
+$attachment->muzzles =scrapeMuzzles();
+$attachment->lowerRails = scrapeLowerRails();
 
+echo $attachment->toJson();
 echo "\n";
 
 
@@ -133,23 +137,23 @@ function scrapeLowerRails() {
 
 	$rowIndex = strpos($content, $rowStartString, $startIndex)+ strlen($rowStartString);
  
-	$muzzles = new Muzzles();
-	$muzzles->version = $version;
+	$lowerRails = new LowerRails();
+	$lowerRails->version = $version;
 
 	while($rowIndex < $endIndex) {
 
-		$muzzleItem = new MuzzleItem();
+		$lowerRailItem = new LowerRailItem();
 		$image = getImageUrl($rowIndex);
-		$muzzleItem->imageUrl = $image;
+		$lowerRailItem->imageUrl = $image;
 
 		// Keep in mind the name at this point is "Muzzle Item Name for gun1, gun2, gun3... etc".
 		$name = getName($rowIndex);   
         $forPosition = strpos($name, $forString);
 
         // Just get the name of the Muzzle Item.
-        $muzzleItem->name = substr($name, 0, $forPosition);
+        $lowerRailItem->name = substr($name, 0, $forPosition);
 
-        $muzzleItem->guns = getGuns(substr($name, $forPosition + strlen($forString), strlen($name) - $forPosition));
+        $lowerRailItem->guns = getGuns(substr($name, $forPosition + strlen($forString), strlen($name) - $forPosition));
 
 		$nextRowIndex = strpos($content, $rowStartString , $rowIndex) + strlen($rowStartString);
 
@@ -172,20 +176,20 @@ function scrapeLowerRails() {
 			$effectValue = substr($effectString, 1, strpos($effectString, "%")-1);
 			$effectSign= EffectSign::from($effectString);
 
-			$muzzleEffect = new muzzleEffect();
-			$muzzleEffect->effect = $effect;
-			$muzzleEffect->value = $effectValue;
-			$muzzleEffect->sign = $effectSign;
+			$lowerRailEffect = new LowerRailEffect();
+			$lowerRailEffect->effect = $effect;
+			$lowerRailEffect->value = $effectValue;
+			$lowerRailEffect->sign = $effectSign;
 
-			$muzzleItem->addEffect($muzzleEffect);
+			$lowerRailItem->addEffect($lowerRailEffect);
 			
 			$dataIndex = strpos($content, $dataStartString, $endDataIndex) + strlen($dataStartString);
 		}
 
-		$muzzles->addItem($muzzleItem);
+		$lowerRails->addItem($lowerRailItem);
 		$rowIndex = $nextRowIndex;
 	}
-	return $muzzles;
+	return $lowerRails;
 	
 }
 
